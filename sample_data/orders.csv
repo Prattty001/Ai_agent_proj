@@ -1,0 +1,6 @@
+order_id,customer_name,amount,status,order_date
+1,Rahul,500,Delivered,2025-06-20
+2,Aman,0,Pending,2025-06-21
+3,,700,Delivered,2025-06-22
+4,Rohit,800,Cancelled,2025-06-23
+4,Rohit,800,Cancelled,2025-06-23

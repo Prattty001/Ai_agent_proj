@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual Environment
+venv/
+.venv/
+env/
+
+# Environment Variables
+.env
+**/.env
+
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
+
+# Python cache
+.pytest_cache/
+
+# Streamlit cache
+.streamlit/
+
+# Uploaded files
+uploads/
+
+# Generated reports
+outputs/
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

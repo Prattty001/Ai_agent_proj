@@ -1,0 +1,7 @@
+{
+    "order_id": "int64",
+    "customer_name": "object",
+    "amount": "int64",
+    "status": "object",
+    "order_date": "object"
+}
