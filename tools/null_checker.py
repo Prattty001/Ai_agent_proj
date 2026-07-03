@@ -1,23 +1,41 @@
 import pandas as pd
 
+
 def check_nulls(df):
-    null_counts = df.isnull().sum()
+
     total_rows = len(df)
 
     issues = []
 
+    for column in df.columns:
 
-    for column, count in null_counts.items():
-        if count > 0:
+        null_count = int(df[column].isnull().sum())
+
+        if null_count > 0:
+
+            # Convert NaN -> "NULL" before sending as JSON
+            sample_records = (
+                df[df[column].isnull()]
+                .head(5)
+                .fillna("NULL")
+                .to_dict(orient="records")
+            )
+
             issues.append({
                 "column": column,
-                "null_count": int(count),
-                "null_percentage": round((count / total_rows) * 100, 2)
+                "null_count": null_count,
+                "null_percentage": round(
+                    (null_count / total_rows) * 100,
+                    2
+                ),
+                "sample_records": sample_records
             })
 
     if issues:
+
         return {
             "status": "FAIL",
+            "total_columns_with_nulls": len(issues),
             "issues": issues
         }
 

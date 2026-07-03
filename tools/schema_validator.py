@@ -1,20 +1,21 @@
 def validate_schema(df, expected_schema):
     """
-    Validates whether the dataframe has the expected columns and datatypes.
+    Validates dataframe schema against expected schema.
+    Returns structured validation evidence for AI reasoning.
     """
-    # Check Missing Columns
+
     missing_columns = [
-        col for col in expected_schema.keys()
+        col
+        for col in expected_schema
         if col not in df.columns
     ]
 
-    # Check Extra Columns
     extra_columns = [
-        col for col in df.columns
-        if col not in expected_schema.keys()
+        col
+        for col in df.columns
+        if col not in expected_schema
     ]
 
-    # Check Data Types
     datatype_issues = []
 
     for col, expected_dtype in expected_schema.items():
@@ -23,29 +24,60 @@ def validate_schema(df, expected_schema):
 
             actual_dtype = str(df[col].dtype)
 
-            # Treat pandas 'object' and python 'str' as equivalent
+            # Treat object and string as equivalent
             if (
-                (expected_dtype == "object" and actual_dtype == "str") or
-                (expected_dtype == "str" and actual_dtype == "object")
+                expected_dtype == "object"
+                and actual_dtype == "str"
+            ) or (
+                expected_dtype == "str"
+                and actual_dtype == "object"
             ):
                 continue
 
             if expected_dtype not in actual_dtype:
+
                 datatype_issues.append({
+
                     "column": col,
-                    "expected": expected_dtype,
-                    "actual": actual_dtype
+
+                    "expected_dtype": expected_dtype,
+
+                    "actual_dtype": actual_dtype
+
                 })
 
-    if not missing_columns and not extra_columns and not datatype_issues:
+    if (
+        not missing_columns
+        and not extra_columns
+        and not datatype_issues
+    ):
+
         return {
+
             "status": "PASS",
-            "details": "Schema is valid."
+
+            "details": "Schema validation passed."
+
         }
 
     return {
+
         "status": "FAIL",
+
         "missing_columns": missing_columns,
+
         "extra_columns": extra_columns,
-        "datatype_issues": datatype_issues
+
+        "datatype_issues": datatype_issues,
+
+        "summary": {
+
+            "missing_count": len(missing_columns),
+
+            "extra_count": len(extra_columns),
+
+            "datatype_issue_count": len(datatype_issues)
+
+        }
+
     }

@@ -1,7 +1,10 @@
 import os
+import json
 
 from google import genai
 from dotenv import load_dotenv
+
+from backend.llm.prompts import SYSTEM_PROMPT
 
 load_dotenv()
 
@@ -12,37 +15,34 @@ client = genai.Client(
 
 def get_ai_validation(validation_report):
 
+    evidence = json.dumps(
+        validation_report,
+        indent=2
+    )
+
     prompt = f"""
-You are a Senior Data Validation Engineer.
+{SYSTEM_PROMPT}
 
-Analyze the validation report and respond ONLY using the information provided.
+Below is structured validation evidence produced by a deterministic validation engine.
 
-Do NOT invent additional validation failures.
+Validation Evidence:
+{evidence}
 
-If the dataset passes all validations, explain why it is READY.
+Instructions:
 
-Respond in Markdown using exactly these sections:
+1. Analyze ONLY the provided evidence.
+2. Do not invent validation failures.
+3. Do not repeat the validation report.
+4. Infer business impact from failed validations.
+5. Infer likely technical root causes.
+6. Prioritize the failed validations.
+7. Recommend immediate remediation.
+8. Recommend long-term prevention.
+9. Mention affected downstream systems if applicable.
+10. Give a confidence level.
+11. End with a production readiness decision.
 
-## Validation Summary
-(2-3 lines)
-
-## Business Impact
-- Bullet points
-
-## Root Cause
-- Bullet points
-
-## Recommendations
-- Bullet points
-
-## Final Readiness Decision
-READY or NOT READY with one short explanation.
-
-Keep the response under 300 words.
-
-Validation Report:
-
-{validation_report}
+Return the answer in Markdown.
 """
 
     response = client.models.generate_content(
@@ -50,4 +50,4 @@ Validation Report:
         contents=prompt
     )
 
-    return response.text
+    return response.text.strip()

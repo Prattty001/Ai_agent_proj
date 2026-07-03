@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from backend.routes.validate import router
 
+
+#Creation of Fast API
 app = FastAPI(
     title="AI Data Validation Agent",
     version="1.0"
